@@ -44,7 +44,12 @@ from powerups   import (PowerUpManager,
 from weapons    import WeaponSystem, LASER, FIRE, MAGNETIC
 from game_ui    import (draw_hud, draw_menu, draw_game_over, draw_pause,
                         draw_level_transition)
-from sounds     import SoundManager
+class SoundManager:
+    """Silent stub for web — browser blocks audio autoplay before user interaction."""
+    def play(self, name: str) -> None: pass
+    def play_music(self, track: str) -> None: pass
+    def stop_music(self) -> None: pass
+    def cleanup(self) -> None: pass
 from effects    import EffectsManager
 from boss       import BossManager
 from enemies    import AlienHead
@@ -325,7 +330,7 @@ async def main() -> None:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                sys.exit()
+                return   # sys.exit() crashes in browser context
 
             if event.type == pygame.KEYDOWN:
                 if state == MENU:

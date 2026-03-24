@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Space Ranger</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #05050f;
+      color: #e0e8ff;
+      font-family: 'Courier New', Courier, monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    canvas#stars {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 60px 24px 80px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #0cf;
+      color: #000;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 3px 10px;
+      letter-spacing: 2px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(42px, 8vw, 80px);
+      letter-spacing: 6px;
+      color: #0cf;
+      text-shadow: 0 0 40px rgba(0,200,255,0.5), 0 0 80px rgba(0,200,255,0.2);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: #7090b0;
+      letter-spacing: 3px;
+      margin-bottom: 48px;
+    }
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(135deg, #ff8c00, #ff5500);
+      color: #fff;
+      text-decoration: none;
+      padding: 16px 36px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 0 30px rgba(255,120,0,0.4);
+    }
+    .download-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 50px rgba(255,120,0,0.7);
+    }
+
+    .platform-note {
+      font-size: 12px;
+      color: #506070;
+      margin-top: 12px;
+      letter-spacing: 1px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin: 60px 0;
+    }
+
+    .feature {
+      border: 1px solid #1a2a3a;
+      padding: 24px;
+      background: rgba(0,30,50,0.5);
+    }
+
+    .feature-icon {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .feature h3 {
+      color: #0cf;
+      font-size: 13px;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .feature p {
+      color: #6080a0;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .controls-section h2 {
+      color: #ffd700;
+      font-size: 14px;
+      letter-spacing: 3px;
+      margin-bottom: 20px;
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px 24px;
+      max-width: 360px;
+    }
+
+    .key {
+      background: #1a2a3a;
+      border: 1px solid #2a4a6a;
+      color: #ffd700;
+      padding: 4px 10px;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .key-desc {
+      color: #8090a0;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+    }
+
+    .install-section {
+      margin-top: 60px;
+      border-left: 2px solid #1a3a5a;
+      padding-left: 24px;
+    }
+
+    .install-section h2 {
+      color: #ffd700;
+      font-size: 14px;
+      letter-spacing: 3px;
+      margin-bottom: 16px;
+    }
+
+    .install-steps {
+      color: #6080a0;
+      font-size: 13px;
+      line-height: 2;
+      list-style: none;
+      counter-reset: steps;
+    }
+
+    .install-steps li {
+      counter-increment: steps;
+    }
+
+    .install-steps li::before {
+      content: counter(steps) ". ";
+      color: #0cf;
+    }
+
+    .install-steps em {
+      color: #c0d8f0;
+      font-style: normal;
+    }
+
+    .github-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #506070;
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 1px;
+      margin-top: 60px;
+      transition: color 0.15s;
+    }
+    .github-link:hover { color: #0cf; }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #0a1a2a;
+      margin: 48px 0;
+    }
+  </style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+
+<div class="content">
+  <div class="badge">INDIE GAME</div>
+  <h1>SPACE<br>RANGER</h1>
+  <p class="subtitle">SIDE-SCROLLING SPACE SHOOTER</p>
+
+  <a class="download-btn"
+     href="https://github.com/abhishek-b-mishra-1/space-ranger/releases/download/v1.0.0/Space.Ranger.Mac.zip">
+    ⬇ DOWNLOAD FOR MAC
+  </a>
+  <p class="platform-note">macOS · Free · ~86MB · No installation required</p>
+
+  <hr class="divider">
+
+  <div class="features">
+    <div class="feature">
+      <div class="feature-icon">🛸</div>
+      <h3>5 UNIQUE BOSSES</h3>
+      <p>Asteroid Prime, Alien Cruiser, Mecha Titan, Leviathan, and the brutal Dreadnought.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🔫</div>
+      <h3>3 WEAPON TYPES</h3>
+      <p>Laser, Fire, and Magnetic. Fire and Magnetic unlock at Level 3.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">💣</div>
+      <h3>BOMB SYSTEM</h3>
+      <p>Press B to clear the entire screen. Collect bomb power-ups to restock.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🎵</div>
+      <h3>PROCEDURAL AUDIO</h3>
+      <p>Every sound and music track is generated from scratch — no audio files.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">📈</div>
+      <h3>BRUTAL DIFFICULTY</h3>
+      <p>Enemies get faster and tougher each level. Level 5 boss is almost unplayable.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">⚡</div>
+      <h3>POWER-UPS & CURSES</h3>
+      <p>Collect upgrades — or pick up a curse that reverses your controls for 8 seconds.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="controls-section">
+    <h2>CONTROLS</h2>
+    <div class="controls-grid">
+      <span class="key">WASD / ARROWS</span><span class="key-desc">Move</span>
+      <span class="key">SPACE / CLICK</span><span class="key-desc">Shoot</span>
+      <span class="key">B</span><span class="key-desc">Deploy Bomb</span>
+      <span class="key">ESC</span><span class="key-desc">Pause</span>
+      <span class="key">R</span><span class="key-desc">Restart (Game Over)</span>
+    </div>
+  </div>
+
+  <div class="install-section">
+    <h2>FIRST TIME ON MAC?</h2>
+    <ol class="install-steps">
+      <li>Download and unzip <em>Space Ranger Mac.zip</em></li>
+      <li><em>Right-click</em> Space Ranger.app → <em>Open</em></li>
+      <li>Click <em>Open</em> in the security dialog</li>
+      <li>That's it — no install needed next time</li>
+    </ol>
+  </div>
+
+  <a class="github-link" href="https://github.com/abhishek-b-mishra-1/space-ranger" target="_blank">
+    ★ View source on GitHub
+  </a>
+</div>
+
+<script>
+  const canvas = document.getElementById('stars');
+  const ctx = canvas.getContext('2d');
+  const stars = [];
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  for (let i = 0; i < 200; i++) {
+    stars.push({
+      x: Math.random(),
+      y: Math.random(),
+      r: Math.random() * 1.5 + 0.3,
+      speed: Math.random() * 0.00015 + 0.00005,
+      alpha: Math.random() * 0.7 + 0.3
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (const s of stars) {
+      s.x -= s.speed;
+      if (s.x < 0) { s.x = 1; s.y = Math.random(); }
+      ctx.beginPath();
+      ctx.arc(s.x * canvas.width, s.y * canvas.height, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(200,220,255,${s.alpha})`;
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+</script>
+</body>
+</html>

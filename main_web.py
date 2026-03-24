@@ -311,7 +311,8 @@ class Game:
 
 # ── Async main loop (required by Pygbag) ──────────────────────────────────────
 async def main() -> None:
-    pygame.init()
+    pygame.display.init()   # only init display — skip audio to avoid browser block
+    pygame.font.init()
     pygame.display.set_caption("Space Ranger")
     screen = pygame.display.set_mode((SCREEN_W, SCREEN_H))
     clock  = pygame.time.Clock()

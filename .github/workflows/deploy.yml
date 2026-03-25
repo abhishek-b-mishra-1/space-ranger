@@ -39,9 +39,14 @@ jobs:
           sed -i 's/autorun : 0/autorun : 1/' build/web/index.html
           # Fix broken prefetch: pythonrc.py is 404 on CDN, cpythonrc.py is 200
           sed -i 's|archives/0.9/pythonrc\.py|archives/0.9/cpythonrc.py|g' build/web/index.html
-          # Download pythons.js, patch it to always fetch cpythonrc.py, serve locally
-          curl -s "https://pygame-web.github.io/archives/0.9/pythons.js" > build/web/pythons.js
+          # Download pythons.js, fix all issues, serve locally
+          CDN="https://pygame-web.github.io/archives/0.9"
+          curl -s "$CDN/pythons.js" > build/web/pythons.js
+          # Fix rc file: VM.script.interpreter + "rc.py" resolves to pythonrc.py (404); hardcode cpythonrc.py
           sed -i 's/VM\.script\.interpreter + "rc\.py"/"cpythonrc.py"/g' build/web/pythons.js
+          # Fix relative dynamic imports — they break when pythons.js is served from our domain
+          sed -i "s|import(\"./vtx.js\")|import(\"$CDN/vtx.js\")|g" build/web/pythons.js
+          sed -i "s|import(\"./vt.js\")|import(\"$CDN/vt.js\")|g" build/web/pythons.js
           # Point index.html at our patched local pythons.js
           sed -i 's|src="https://pygame-web.github.io/archives/0.9/pythons.js"|src="pythons.js"|' build/web/index.html
 

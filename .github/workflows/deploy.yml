@@ -26,29 +26,16 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install pygame "pygbag==0.9.2"
+        run: pip install pygame "pygbag==0.8.6"
 
       - name: Build web version with Pygbag
         run: pygbag --build main_web.py
 
-      - name: Patch built index.html and pythons.js
+      - name: Patch built index.html
         run: |
-          # Patch index.html
-          sed -i 's/data-os=vtx,fs,snd,gui/data-os=vtx,fs,gui/' build/web/index.html
+          sed -i 's/data-os="vtx,fs,snd,gui"/data-os="vtx,fs,gui"/' build/web/index.html
           sed -i 's/ume_block : 1/ume_block : 0/' build/web/index.html
           sed -i 's/autorun : 0/autorun : 1/' build/web/index.html
-          # Fix broken prefetch: pythonrc.py is 404 on CDN, cpythonrc.py is 200
-          sed -i 's|archives/0.9/pythonrc\.py|archives/0.9/cpythonrc.py|g' build/web/index.html
-          # Download pythons.js, fix all issues, serve locally
-          CDN="https://pygame-web.github.io/archives/0.9"
-          curl -s "$CDN/pythons.js" > build/web/pythons.js
-          # Fix rc file: VM.script.interpreter + "rc.py" resolves to pythonrc.py (404); hardcode cpythonrc.py
-          sed -i 's/VM\.script\.interpreter + "rc\.py"/"cpythonrc.py"/g' build/web/pythons.js
-          # Fix relative dynamic imports — they break when pythons.js is served from our domain
-          sed -i "s|import(\"./vtx.js\")|import(\"$CDN/vtx.js\")|g" build/web/pythons.js
-          sed -i "s|import(\"./vt.js\")|import(\"$CDN/vt.js\")|g" build/web/pythons.js
-          # Point index.html at our patched local pythons.js
-          sed -i 's|src="https://pygame-web.github.io/archives/0.9/pythons.js"|src="pythons.js"|' build/web/index.html
 
       - name: Add COOP/COEP headers for Netlify
         run: |

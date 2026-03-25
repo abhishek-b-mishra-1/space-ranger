@@ -34,8 +34,6 @@ jobs:
       - name: Patch built index.html
         run: |
           sed -i 's/data-os="vtx,fs,snd,gui"/data-os="vtx,fs,gui"/' build/web/index.html
-          sed -i 's/ume_block : 1/ume_block : 0/' build/web/index.html
-          sed -i 's/autorun : 0/autorun : 1/' build/web/index.html
 
       - name: Add COOP/COEP headers for Netlify
         run: |

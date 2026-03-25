@@ -31,9 +31,18 @@ jobs:
       - name: Build web version with Pygbag
         run: pygbag --build main_web.py
 
-      - name: Patch built index.html
+      - name: Patch built index.html and pythons.js
         run: |
+          # Strip audio from index.html
           sed -i 's/data-os="vtx,fs,snd,gui"/data-os="vtx,fs,gui"/' build/web/index.html
+          # Download pythons.js from CDN and fix const-vs-let bug (line 2438: const code reassigned)
+          curl -s "https://pygame-web.github.io/archives/0.8/pythons.js" > build/web/pythons.js
+          sed -i 's/                const code = script\.text/                let code = script.text/' build/web/pythons.js
+          # Fix dynamic imports to use absolute CDN URLs (relative paths break when served locally)
+          sed -i 's|import("\./vtx\.js")|import("https://pygame-web.github.io/archives/0.8/vtx.js")|g' build/web/pythons.js
+          sed -i 's|import("\./vt\.js")|import("https://pygame-web.github.io/archives/0.8/vt.js")|g' build/web/pythons.js
+          # Point index.html at our patched pythons.js
+          sed -i 's|src="https://pygame-web.github.io/archives/0.8/pythons\.js"|src="pythons.js"|' build/web/index.html
 
       - name: Add COOP/COEP headers for Netlify
         run: |

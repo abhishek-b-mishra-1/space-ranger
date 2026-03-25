@@ -34,6 +34,10 @@ jobs:
       - name: Disable audio in built index.html
         run: sed -i 's/data-os=vtx,fs,snd,gui/data-os=vtx,fs,gui/' build/web/index.html
 
+      - name: Add COOP/COEP headers for Netlify
+        run: |
+          printf '/*\n  Cross-Origin-Opener-Policy: same-origin\n  Cross-Origin-Embedder-Policy: credentialless\n  Cross-Origin-Resource-Policy: cross-origin\n' > build/web/_headers
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

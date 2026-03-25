@@ -31,12 +31,19 @@ jobs:
       - name: Build web version with Pygbag
         run: pygbag --build main_web.py
 
-      - name: Patch built index.html
+      - name: Patch built index.html and pythons.js
         run: |
+          # Patch index.html
           sed -i 's/data-os=vtx,fs,snd,gui/data-os=vtx,fs,gui/' build/web/index.html
           sed -i 's/ume_block : 1/ume_block : 0/' build/web/index.html
           sed -i 's/autorun : 0/autorun : 1/' build/web/index.html
-          sed -i 's/data-python=python3\.12/data-python=cpython3.12/' build/web/index.html
+          # Fix broken prefetch: pythonrc.py is 404 on CDN, cpythonrc.py is 200
+          sed -i 's|archives/0.9/pythonrc\.py|archives/0.9/cpythonrc.py|g' build/web/index.html
+          # Download pythons.js, patch it to always fetch cpythonrc.py, serve locally
+          curl -s "https://pygame-web.github.io/archives/0.9/pythons.js" > build/web/pythons.js
+          sed -i 's/VM\.script\.interpreter + "rc\.py"/"cpythonrc.py"/g' build/web/pythons.js
+          # Point index.html at our patched local pythons.js
+          sed -i 's|src="https://pygame-web.github.io/archives/0.9/pythons.js"|src="pythons.js"|' build/web/index.html
 
       - name: Add COOP/COEP headers for Netlify
         run: |
